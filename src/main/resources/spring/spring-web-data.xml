@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    <context:annotation-config /><!--隐蔽的注入service，Autowired等注解，有了context:component-scan之后可以 省略-->
+    <context:component-scan base-package="com.raycloud.myproject.test" >
+    </context:component-scan>
+    <!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+    <dubbo:application name="hjy_consumer" />
+    <!-- 使用zookeeper注册中心暴露服务地址 -->
+    <!-- <dubbo:registry address="multicast://224.5.6.7:1234" /> -->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181" />
+    <!-- 生成远程服务代理，可以像使用本地bean一样使用demoService -->
+    <dubbo:reference id="iUserDAO" interface="com.raycloud.myproject.test.dao.IUserDAO" version="1.0.0" />
+    <dubbo:reference id="userDAO" interface="com.raycloud.myproject.test.dao.IUserDAO" version="1.0.0" />
+    <!--<bean id="UserService" class="com.raycloud.myproject.test.service.impl.UserServiceImpl" >
+        <property name="iUserDAO" ref="iUserDAO"></property>
+    </bean>-->
+</beans>
+<!--
+<dubbo:application name="xs_provider" />
+<dubbo:registry address="zookeeper://127.0.0.1:2181" />
+<dubbo:protocol name="dubbo" port="2026" host="127.0.0.1" />
+<dubbo:service interface="com.raycloud.myproject.test.dao.IUserDAO" ref="userDAO" version="1.0.0" />
+<bean id="userDAO" class="com.raycloud.myproject.test.dao.imp.UserDAOImp"  />
+-->
+<!--
+<dubbo:application name="xs_provider" />
+<dubbo:registry address="zookeeper://127.0.0.1:2181" />&lt;!&ndash;消费者者的IP&ndash;&gt;
+<dubbo:protocol name="dubbo" port="3880" host="127.0.0.1" />&lt;!&ndash;本电脑的ip&ndash;&gt;
+<dubbo:service interface="com.raycloud.myproject.test.dao.IUserDAO"
+               ref="iUserDAO" version="1.0.0"/>&lt;!&ndash; 版本号 &ndash;&gt;
+<bean id="iUserDAO" class="com.raycloud.myproject.test.dao.impl.DaoImpl" />
+
+-->
